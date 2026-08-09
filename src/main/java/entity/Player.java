@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import handler.KeyHandler;
+import object.Obj_Shield_Wood;
+import object.Obj_Sword_Normal;
 
 public class Player extends Entity{
     
@@ -47,8 +49,26 @@ public class Player extends Entity{
         direction = "down";
         
         // ESTADO DEL JUGADOR
+        level = 1;
         maxLife = 6;    // 1 vida es la mitad de un corazón
         life = maxLife;
+        strength = 1;
+        dexterity = 1;
+        exp = 0;
+        nextLevelExp = 5;
+        coin = 0;
+        currentWeapon = new Obj_Sword_Normal(gp);
+        currentShield = new Obj_Shield_Wood(gp);
+        attack = getAttack();
+        defense = getDefense();
+    }
+    
+    public int getAttack(){
+        return attack = strength * currentWeapon.attackValue;
+    }
+    
+    public int getDefense(){
+        return defense = dexterity * currentShield.defenseValue;
     }
     
     public void getPlayerImage(){

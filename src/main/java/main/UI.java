@@ -92,6 +92,11 @@ public class UI {
         if(gp.gameState == gp.dialogueState){
             drawDialogueScreen();
         }
+        
+        // CHARACTER STATE
+        if(gp.gameState == gp.characterState){
+            drawCharacterScreen();
+        }
     }
     
     public void drawTitleScreen(){
@@ -210,6 +215,68 @@ public class UI {
         }
     }
     
+    public void drawCharacterScreen(){
+        
+        // CREATE A FRAME
+        final int frameX = gp.tileSize * 2;
+        final int frameY = gp.tileSize;
+        final int frameWidth = gp.tileSize * 5;
+        final int frameHeight = gp.tileSize * 10;
+        
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+        
+        // TEXT
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(16F));
+        
+        int textX = frameX + 20;
+        int textY = frameY + gp.tileSize;
+        final int lineHeight = 45;
+
+        // 1. NOMBRES (ETIQUETAS)
+        // Metemos todos los nombres en un arreglo y los dibujamos con un simple bucle
+        String[] labels = {
+            "Nivel", "Vida", "Destreza", "Fuerza", 
+            "Ataque", "Defensa", "XP", "Oro", "Arma", "Escudo"
+        };
+
+        for (String label : labels) {
+            g2.drawString(label, textX, textY);
+            textY += lineHeight;
+        }
+
+        // 2. VALORES NUMÉRICOS
+        int tailX = (frameX + frameWidth) - 30;
+        textY = frameY + gp.tileSize; // Reseteamos la Y para que empiece desde arriba otra vez
+
+        // Extraemos las estadísticas del jugador en el mismo orden
+        String[] values = {
+            String.valueOf(gp.player.level),
+            gp.player.life + "/" + gp.player.maxLife,
+            String.valueOf(gp.player.dexterity),
+            String.valueOf(gp.player.strength),
+            String.valueOf(gp.player.attack),
+            String.valueOf(gp.player.defense),
+            String.valueOf(gp.player.exp),
+            String.valueOf(gp.player.coin)
+        };
+
+        for (String value : values) {
+            int valueX = getXforAlingToRight(value, tailX);
+            g2.drawString(value, valueX, textY);
+            textY += lineHeight;
+        }
+
+        // 3. IMÁGENES DE EQUIPAMIENTO
+        // textY ya quedó posicionado exactamente después de "Oro" gracias al bucle
+        textY -= 35; // Tu ajuste original de píxeles
+
+        g2.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize + 10, textY, null);
+        textY += gp.tileSize;
+        g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize + 10, textY, null);
+
+    }
+    
     public void drawSubWindow(int x, int y, int width, int height){
         // El cuarto parámetro del color indica transparencia
         Color c1 = new Color(0,0,0, 0.75f); // De esta manera indico el porcentaje %
@@ -237,6 +304,13 @@ public class UI {
         // Si solo pongo "int x = gp.screenWidth/2;", no se va a presentar el texto en la mitad
         int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         return gp.screenWidth/2 - length/2;
+    }
+    
+    public int getXforAlingToRight(String text, int tailX){
+        // Si solo pongo "int x = gp.screenWidth/2;", no se va a presentar el texto en la mitad
+        int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        int x = tailX - length;
+        return x;
     }
     
     public void controlCommandNum(){
