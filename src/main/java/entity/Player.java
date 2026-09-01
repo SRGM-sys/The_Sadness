@@ -7,6 +7,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import handler.KeyHandler;
+import java.util.ArrayList;
+import object.Obj_Key;
 import object.Obj_Shield_Wood;
 import object.Obj_Sword_Normal;
 
@@ -19,6 +21,9 @@ public class Player extends Entity{
     public final int screenY;
     int standCounter = 0;
     
+    // Inventario del Jugador
+    public ArrayList<Entity> inventory = new ArrayList<>();
+    public final int maxInventorySize = 20;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -38,6 +43,7 @@ public class Player extends Entity{
         setDefaultValues();
         getPlayerImage();
         getPlayerAttackImage();
+        setItems();
     }
     
     // Vamos a establecer las configuraciones del Player
@@ -61,6 +67,12 @@ public class Player extends Entity{
         currentShield = new Obj_Shield_Wood(gp);
         attack = getAttack();
         defense = getDefense();
+    }
+    
+    public void setItems(){
+        inventory.add(currentWeapon);
+        inventory.add(currentShield);
+        inventory.add(new Obj_Key(gp));
     }
     
     public int getAttack(){

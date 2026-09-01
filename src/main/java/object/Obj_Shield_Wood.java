@@ -10,5 +10,6 @@ public class Obj_Shield_Wood extends Entity{
         name = "Wood Shield";
         down1 = setup("objects","shield_wood", super.px, super.px);
         defenseValue = 1;
+        description = "["+name+"]" + "\nUn escudo usado";
     }
 }

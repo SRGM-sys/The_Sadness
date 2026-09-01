@@ -64,6 +64,7 @@ public class Entity {
     // ATRIBUTO DE LOS ITEMS
     public int attackValue;
     public int defenseValue;
+    public String description = "["+name+"]\n";
     
     // COUNTERS
     public int invincibleCounter = 0;

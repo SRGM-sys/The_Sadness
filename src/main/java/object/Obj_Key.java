@@ -9,5 +9,6 @@ public class Obj_Key extends Entity{
         super(gp);
         name = "key";
         down1 = setup("objects","key", super.px, super.px);
+        description = "["+name+"]" + "\nPuede servir para algo";
     }
 }
