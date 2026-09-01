@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 //-----------------------------------------------------------
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import object.Obj_Heart;
 
 /*
@@ -29,9 +30,8 @@ public class UI {
     Font fixedsys;
     
     public boolean messageOn = false;
-    public String message;
-    int messageCounter = 0;
-    
+    ArrayList<String> message = new ArrayList<>();
+    ArrayList<Integer> messageCounter = new ArrayList<>();
     public boolean gameFinished = false;
     public String currentDialogue;
     public int commandNum = 0;
@@ -57,9 +57,9 @@ public class UI {
         heart_blank = heart.image3;
     }
     
-    public void showMessage(String text){
-        message = text;
-        messageOn = true;
+    public void addMessage(String text){
+        message.add(text);
+        messageCounter.add(0);
     }
 
     /*
@@ -77,9 +77,10 @@ public class UI {
             drawTitleScreen();
         }
         
-        // GAME STATE
+        // PLAY STATE
         if(gp.gameState == gp.playState){
             drawPlayerLife();
+            drawMessage();
         }
         
         // PAUSE STATE
@@ -97,6 +98,33 @@ public class UI {
         if(gp.gameState == gp.characterState){
             drawCharacterScreen();
         }
+    }
+    
+    public void drawMessage(){
+        int messageX = gp.tileSize;
+        int messageY = gp.tileSize*11;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
+                
+        for(int i=0; i <message.size(); i++){
+            if(message.get(i) !=  null){
+                
+                g2.setColor(Color.black);
+                g2.drawString(message.get(i), messageX+2, messageY+2);
+                g2.setColor(Color.white);
+                g2.drawString(message.get(i), messageX, messageY);
+                
+                // Actualizamos el índice del messageCounter, o algo así
+                int counter = messageCounter.get(i)+ 1;
+                messageCounter.set(i, counter);
+                messageY -= 30;
+                
+                if(messageCounter.get(i) > 100){
+                    message.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
+        }
+        
     }
     
     public void drawTitleScreen(){
@@ -257,7 +285,7 @@ public class UI {
             String.valueOf(gp.player.strength),
             String.valueOf(gp.player.attack),
             String.valueOf(gp.player.defense),
-            String.valueOf(gp.player.exp),
+            String.valueOf(gp.player.exp + "/" + gp.player.nextLevelExp),
             String.valueOf(gp.player.coin)
         };
 

@@ -6,6 +6,8 @@ import object.Obj_Door;
 
 public class AssetSetter {
     
+    private int maxSlime = 5;
+    
     GamePanel gp;
     
     public AssetSetter(GamePanel gp){
@@ -23,13 +25,29 @@ public class AssetSetter {
     }
     
     public void setMonster(){
-        gp.mon[0] = new MON_GreenSlime(gp);
-        gp.mon[0].worldX = gp.tileSize * 23;
-        gp.mon[0].worldY = gp.tileSize * 36;
+        int i = 0;
         
-        gp.mon[1] = new MON_GreenSlime(gp);
-        gp.mon[1].worldX = gp.tileSize * 23;
-        gp.mon[1].worldY = gp.tileSize * 37;
+        gp.mon[i] = new MON_GreenSlime(gp);
+        gp.mon[i].worldX = gp.tileSize * 23;
+        gp.mon[i].worldY = gp.tileSize * 36;
+        i++;
+        gp.mon[i] = new MON_GreenSlime(gp);
+        gp.mon[i].worldX = gp.tileSize * 23;
+        gp.mon[i].worldY = gp.tileSize * 37;
+        i++;
+        gp.mon[i] = new MON_GreenSlime(gp);
+        gp.mon[i].worldX = gp.tileSize * 22;
+        gp.mon[i].worldY = gp.tileSize * 32;
+        i++;
+        gp.mon[i] = new MON_GreenSlime(gp);
+        gp.mon[i].worldX = gp.tileSize * 25;
+        gp.mon[i].worldY = gp.tileSize * 42;
+        i++;
+        gp.mon[i] = new MON_GreenSlime(gp);
+        gp.mon[i].worldX = gp.tileSize * 25;
+        gp.mon[i].worldY = gp.tileSize * 32;
         
     }
+    
+    
 }

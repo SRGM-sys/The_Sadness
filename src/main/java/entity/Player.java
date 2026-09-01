@@ -253,7 +253,13 @@ public class Player extends Entity{
     public void contactMonster(int i){
         if (i != 999 && !invincible){
             gp.soundEffect(7);
-            life -=1;
+            
+            int damage = gp.mon[i].attack - defense;
+            if(damage < 0){
+                damage = 0;
+            }
+            
+            life -=damage;
             invincible = true;
         }
     }
@@ -263,14 +269,38 @@ public class Player extends Entity{
             if(!gp.mon[i].invincible){
                 gp.soundEffect(6);
                 
-                gp.mon[i].life -= 1;
+                int damage = attack - gp.mon[i].defense;
+                if(damage < 0){
+                    damage = 0;
+                }
+                gp.mon[i].life -= damage;
+                
                 gp.mon[i].invincible = true;
                 gp.mon[i].damageReaction();
                 
                 if(gp.mon[i].life <= 0){
                     gp.mon[i].dying = true;
+                    exp += gp.mon[i].exp;
+                    gp.ui.addMessage("+ "+ gp.mon[i].exp + " xp");
+                    checkLevelUp();
                 }
             }
+        }
+    }
+    
+    public void checkLevelUp(){
+        if(exp >= nextLevelExp){
+            level ++;
+            nextLevelExp = nextLevelExp + 20;
+            maxLife += 2;
+            strength++;
+            dexterity++;
+            attack = getAttack();
+            defense = getDefense();
+            
+            gp.soundEffect(9);
+            gp.gameState = gp.dialogueState;
+            gp.ui.currentDialogue = "Subiste al nivel "+level +", sientes como tu \n determinación aumenta"; 
         }
     }
     
