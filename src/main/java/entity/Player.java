@@ -1,8 +1,8 @@
-
+      
 package entity;
 
 import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
+import java. awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
@@ -37,8 +37,8 @@ public class Player extends Entity{
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y; 
         
-        attackArea.width = 36;
-        attackArea.height = 36;
+        //attackArea.width = 36;
+        //attackArea.height = 36;
         
         setDefaultValues();
         getPlayerImage();
@@ -76,6 +76,7 @@ public class Player extends Entity{
     }
     
     public int getAttack(){
+        attackArea = currentWeapon.attackArea;
         return attack = strength * currentWeapon.attackValue;
     }
     
@@ -95,14 +96,29 @@ public class Player extends Entity{
     }
     
     public void getPlayerAttackImage(){
-        atkUp1 = setup("player", "boy_attack_up_1", super.px, super.px*2);
-        atkUp2 = setup("player", "boy_attack_up_2", super.px, super.px*2);
-        atkDown1 = setup("player", "boy_attack_down_1", super.px, super.px*2);
-        atkDown2 = setup("player", "boy_attack_down_2", super.px, super.px*2);
-        atkLeft1 = setup("player", "boy_attack_left_1", super.px*2, super.px);
-        atkLeft2 = setup("player", "boy_attack_left_2", super.px*2, super.px);
-        atkRight1 = setup("player", "boy_attack_right_1", super.px*2, super.px);
-        atkRight2 = setup("player", "boy_attack_right_2", super.px*2, super.px);
+        
+        if(currentWeapon.type == type_sword){
+            atkUp1 = setup("player", "boy_attack_up_1", super.px, super.px*2);
+            atkUp2 = setup("player", "boy_attack_up_2", super.px, super.px*2);
+            atkDown1 = setup("player", "boy_attack_down_1", super.px, super.px*2);
+            atkDown2 = setup("player", "boy_attack_down_2", super.px, super.px*2);
+            atkLeft1 = setup("player", "boy_attack_left_1", super.px*2, super.px);
+            atkLeft2 = setup("player", "boy_attack_left_2", super.px*2, super.px);
+            atkRight1 = setup("player", "boy_attack_right_1", super.px*2, super.px);
+            atkRight2 = setup("player", "boy_attack_right_2", super.px*2, super.px);
+        }
+        
+        if(currentWeapon.type == type_axe){
+            atkUp1 = setup("player", "boy_axe_up_1", super.px, super.px*2);
+            atkUp2 = setup("player", "boy_axe_up_2", super.px, super.px*2);
+            atkDown1 = setup("player", "boy_axe_down_1", super.px, super.px*2);
+            atkDown2 = setup("player", "boy_axe_down_2", super.px, super.px*2);
+            atkLeft1 = setup("player", "boy_axe_left_1", super.px*2, super.px);
+            atkLeft2 = setup("player", "boy_axe_left_2", super.px*2, super.px);
+            atkRight1 = setup("player", "boy_axe_right_1", super.px*2, super.px);
+            atkRight2 = setup("player", "boy_axe_right_2", super.px*2, super.px);
+        }
+        
     }
     
     
@@ -153,9 +169,6 @@ public class Player extends Entity{
             // CHECK EVENT COLLISION
             gp.eHandler.checkEvent();
             
-            // Si presiono Enter se resetea inmediatamente y no se queda "guardado" como true.
-            gp.keyH.enterPressed = false;
-            
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
             if(!collisionOn && !keyH.enterPressed){
                 
@@ -176,6 +189,9 @@ public class Player extends Entity{
                 else if(spriteNum == 2) spriteNum = 1;
                 spriteCounter  = 0;
             }
+            
+            gp.keyH.enterPressed = false;
+            
         } else{
             standCounter++;
             if(standCounter==20 ){
@@ -259,6 +275,19 @@ public class Player extends Entity{
         // Si i = 999, significa que no hemos tocado el objeto
         if(i != 999){
             
+            String text;
+            
+            if(inventory.size() != maxInventorySize){
+                inventory.add(gp.obj[i]);
+                gp.soundEffect(1);
+                text = "Conseguiste: " + gp.obj[i].name;
+            }
+            else{
+                text = "El inventario se encuentra lleno";
+            }
+            
+            gp.ui.addMessage(text);
+            gp.obj[i] = null;
         }
     }
     
@@ -313,6 +342,28 @@ public class Player extends Entity{
             gp.soundEffect(9);
             gp.gameState = gp.dialogueState;
             gp.ui.currentDialogue = "Subiste al nivel "+level +", sientes como tu \n determinación aumenta"; 
+        }
+    }
+    
+    public void selectItem(){
+        int itemIndex = gp.ui.getItemIndexOnSlot();
+        
+        if(itemIndex < inventory.size()){
+            Entity selectedItem = inventory.get(itemIndex);
+            
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe){
+                currentWeapon = selectedItem;
+                attack = getAttack();
+                getPlayerAttackImage();
+            }
+            if(selectedItem.type == type_shield){
+                currentShield = selectedItem;
+                defense = getDefense();
+            }
+            if(selectedItem.type == type_consumable){
+                selectedItem.use(this);
+                inventory.remove(itemIndex);
+            }
         }
     }
     

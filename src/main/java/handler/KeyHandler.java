@@ -70,7 +70,7 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_D) rightPressed = true;
 
         if(code == KeyEvent.VK_P) gp.gameState = gp.pauseState;
-        if(code == KeyEvent.VK_ENTER) enterPressed = true;
+        if(code == KeyEvent.VK_X) enterPressed = true;
 
         if(code == KeyEvent.VK_C) gp.gameState = gp.characterState;
 
@@ -90,7 +90,7 @@ public class KeyHandler implements KeyListener{
     }
     
     public void dialogueState(int code){
-        if(code == KeyEvent.VK_ENTER) gp.gameState = gp.playState;
+        if(code == KeyEvent.VK_X) gp.gameState = gp.playState;
     }
     
     public void characterState(int code){
@@ -120,6 +120,9 @@ public class KeyHandler implements KeyListener{
                gp.ui.slotCol++;
             }
             gp.soundEffect(10);
+        }
+        if(code == KeyEvent.VK_X){
+            gp.player.selectItem();
         }
     }
 

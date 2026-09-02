@@ -44,7 +44,6 @@ public class Entity {
     boolean hpBarOn = false;
     
     // ATRIBUTO DE LA ENTIDAD
-    public int type; // 0 = player ; 1 = npc ; 2 = monster
     public boolean collision = false;
     public String name;
     public int speed;
@@ -73,6 +72,16 @@ public class Entity {
     public int dyingCounter = 0;
     public int hpBarCounter = 0;
     
+    // TIPO
+    public int type;
+    public final int type_player = 0;
+    public final int type_npc = 1;
+    public final int type_monster = 2;
+    public final int type_sword = 3;
+    public final int type_axe = 4;
+    public final int type_shield = 5;
+    public final int type_consumable = 6;
+    
     public Entity(GamePanel gp){
         this.gp = gp;
         this.px = gp.tileSize;
@@ -96,6 +105,7 @@ public class Entity {
         }
     }
     
+    public void use(Entity entity){}
     
     public void update(){
         setAction();
@@ -107,7 +117,7 @@ public class Entity {
         boolean contactPlayer = gp.cChecker.checkerPlayer(this);
         
         // Si el jugador choca con un mounstro entonces
-        if(this.type == 2 && contactPlayer){
+        if(this.type == type_monster && contactPlayer){
             if(!gp.player.invincible){
                 gp.soundEffect(7);
                 
@@ -185,7 +195,7 @@ public class Entity {
             }
             
             // MONSTER HP BAR
-            if(type == 2 && hpBarOn){
+            if(type == type_monster && hpBarOn){
                 
                 double oneScale = (double) gp.tileSize / maxLife;
                 double hpBarValue = oneScale*life;
