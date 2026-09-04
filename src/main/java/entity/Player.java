@@ -59,6 +59,8 @@ public class Player extends Entity{
         level = 1;
         maxLife = 6;    // 1 vida es la mitad de un corazón
         life = maxLife;
+        maxMana = 4;
+        mana = maxMana;
         strength = 1;
         dexterity = 1;
         exp = 0;
@@ -202,10 +204,15 @@ public class Player extends Entity{
             }
         } 
         
-        if(gp.mouseH.rightPressed && !projectile.alive && shotAvailableCounter == 30){
+        if(gp.mouseH.rightPressed && !projectile.alive 
+        && shotAvailableCounter == 30 && projectile.haveResource(this)){
             // Aquí configuramos la posición, dirección y durabilidad del proyectil
             projectile.set(worldX, worldY, direction, true, this);
             
+            // Restamos el costo (mana, munición, etc)
+            projectile.subtractResource(this);
+            
+            // Lo añadimos a la lista
             gp.projectileList.add(projectile);
             shotAvailableCounter = 0;
             gp.soundEffect(11);
@@ -350,7 +357,6 @@ public class Player extends Entity{
             nextLevelExp = nextLevelExp + 20;
             maxLife += 2;
             strength++;
-            dexterity++;
             attack = getAttack();
             defense = getDefense();
             

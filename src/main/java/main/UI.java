@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import object.Obj_Heart;
+import object.Obj_ManaCrystal;
 
 /*
 * Esta clase manejará todo lo relacionado a la interfaz de usuario
@@ -35,7 +36,7 @@ public class UI {
     public boolean gameFinished = false;
     public String currentDialogue;
     public int commandNum = 0;
-    BufferedImage heart_full, heart_half, heart_blank;
+    BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
 
     public int slotCol = 0;
     public int slotRow = 0;
@@ -57,6 +58,10 @@ public class UI {
         heart_full = heart.image;
         heart_half = heart.image2;
         heart_blank = heart.image3;
+        
+        Entity crystal = new Obj_ManaCrystal(gp);
+        crystal_full = crystal.image;
+        crystal_blank = crystal.image2;
     }
     
     public void addMessage(String text){
@@ -196,6 +201,25 @@ public class UI {
             x -= gp.tileSize;
         }
         
+        // Aquí vamos a dibujar el contador de Mana del jugador
+        // DRAW BLANK MANA
+        x = (gp.tileSize * gp.maxScreenCol) - (gp.tileSize + gp.tileSize/3);
+        y = gp.tileSize*2 - 28;
+        i = 0;
+        while(i < gp.player.maxMana){
+            g2.drawImage(crystal_blank, x, y, null);
+            i++;
+            x -= 35;
+        }
+        // DRAW FULL_MANA
+        x = (gp.tileSize * gp.maxScreenCol) - (gp.tileSize + gp.tileSize/3);
+        i = 0;
+        while(i < gp.player.mana){
+            g2.drawImage(crystal_full, x, y, null);
+            i++;
+            x -= 35;
+        }
+        
     }
     
     public void drawPauseScreen(){
@@ -262,12 +286,12 @@ public class UI {
         
         int textX = frameX + 20;
         int textY = frameY + gp.tileSize;
-        final int lineHeight = 45;
+        final int lineHeight = 50;
 
-        // 1. NOMBRES (ETIQUETAS)
+        // 1. NOMBRES (ETIQUETAS)a
         // Metemos todos los nombres en un arreglo y los dibujamos con un simple bucle
         String[] labels = {
-            "Nivel", "Vida", "Destreza", "Fuerza", 
+            "Nivel", "Vida", "Mana", 
             "Ataque", "Defensa", "XP", "Oro", "Arma", "Escudo"
         };
 
@@ -284,8 +308,7 @@ public class UI {
         String[] values = {
             String.valueOf(gp.player.level),
             gp.player.life + "/" + gp.player.maxLife,
-            String.valueOf(gp.player.dexterity),
-            String.valueOf(gp.player.strength),
+            String.valueOf(gp.player.mana + "/" +gp.player.maxMana),
             String.valueOf(gp.player.attack),
             String.valueOf(gp.player.defense),
             String.valueOf(gp.player.exp + "/" + gp.player.nextLevelExp),

@@ -103,6 +103,7 @@ public class EventHandler {
             gp.gameState = gameState;
             gp.ui.currentDialogue = "Observar el lago te llena de \ndeterminación";
             gp.player.life = gp.player.maxLife;
+            gp.player.mana = gp.player.maxMana;
         }
         
         gp.keyH.enterPressed = false;
