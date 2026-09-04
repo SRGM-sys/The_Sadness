@@ -296,20 +296,29 @@ public class Player extends Entity{
     public void pickUpObject(int i){
         // Si i = 999, significa que no hemos tocado el objeto
         if(i != 999){
-            
-            String text;
-            
-            if(inventory.size() != maxInventorySize){
-                inventory.add(gp.obj[i]);
-                gp.soundEffect(1);
-                text = "Conseguiste: " + gp.obj[i].name;
+            // PICKUP ONLY ITEMS
+            if(gp.obj[i].type == type_pickUpOnly){
+                gp.obj[i].use(this);
+                gp.obj[i] = null;
             }
+            
+            // INVENTORY ITEMS
             else{
-                text = "El inventario se encuentra lleno";
+                String text;
+            
+                if(inventory.size() != maxInventorySize){
+                    inventory.add(gp.obj[i]);
+                    gp.soundEffect(1);
+                    text = "Conseguiste: " + gp.obj[i].name;
+                }
+                else{
+                    text = "El inventario se encuentra lleno";
+                }
+
+                gp.ui.addMessage(text);
+                gp.obj[i] = null;
             }
             
-            gp.ui.addMessage(text);
-            gp.obj[i] = null;
         }
     }
     
@@ -362,7 +371,10 @@ public class Player extends Entity{
             
             gp.soundEffect(9);
             gp.gameState = gp.dialogueState;
-            gp.ui.currentDialogue = "Subiste al nivel "+level +", sientes como tu \n determinación aumenta"; 
+            gp.ui.currentDialogue = "Subiste al nivel "+level +", sientes como tu \n determinación aumenta";
+            
+            life = maxLife;
+            mana = maxMana;
         }
     }
     
@@ -381,8 +393,7 @@ public class Player extends Entity{
                 currentShield = selectedItem;
                 defense = getDefense();
             }
-            if(selectedItem.type == type_consumable){
-                selectedItem.use(this);
+            if(selectedItem.type == type_consumable && selectedItem.use(this)){
                 inventory.remove(itemIndex);
             }
         }

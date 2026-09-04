@@ -3,6 +3,7 @@ package monster;
 import entity.Entity;
 import java.util.Random;
 import main.GamePanel;
+import object.Obj_Coin;
 import object.Obj_Rock;
 
 public class MON_GreenSlime extends Entity{
@@ -84,5 +85,13 @@ public class MON_GreenSlime extends Entity{
         // Esta reacción de aquí el slime mira a la dirección del jugador
         // Es decir cuando es golpeado se va a alejar
         direction = gp.player.direction;
+    }
+    
+    @Override
+    public void checkDrop(){
+        // Con esto manejaremos que va a dropear el mounstro
+        // int i = new Random().nextInt(100)+1;
+        
+        dropItem(new Obj_Coin(gp));
     }
 }

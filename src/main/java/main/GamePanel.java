@@ -49,9 +49,9 @@ public class GamePanel extends JPanel implements Runnable{
     
     // ENTITY & OBJECT
     public Player player = new Player(this, keyH);
-    public Entity obj[] = new Entity[10]; // Mostrar 10 objetos a la vez
+    public Entity obj[] = new Entity[20]; // Mostrar 10 objetos a la vez
     public Entity npc[] = new Entity[10];
-    public Entity mon[] = new Entity[10];
+    public Entity mon[] = new Entity[20];
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
     
@@ -137,6 +137,7 @@ public class GamePanel extends JPanel implements Runnable{
                     }
 
                     if (!mon[i].alive) {
+                        mon[i].checkDrop();
                         mon[i] = null; 
                     }
                 }
