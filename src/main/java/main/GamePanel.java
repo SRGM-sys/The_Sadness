@@ -4,6 +4,7 @@ import handler.KeyHandler;
 import handler.EventHandler;
 import entity.Entity;
 import entity.Player;
+import entity.Projectile;
 import handler.MouseHandler;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable{
     public Entity obj[] = new Entity[10]; // Mostrar 10 objetos a la vez
     public Entity npc[] = new Entity[10];
     public Entity mon[] = new Entity[10];
+    public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
     
     // GAME STATE (Manejar cada estadod el juego)
@@ -139,6 +141,18 @@ public class GamePanel extends JPanel implements Runnable{
                     }
                 }
             }
+            
+            for (int i = 0; i < projectileList.size(); i++) {
+                if (projectileList.get(i) != null) {
+                    if (projectileList.get(i).alive){
+                        projectileList.get(i).update();
+                    }
+
+                    if (!projectileList.get(i).alive) {
+                        projectileList.remove(i);
+                    }
+                }
+            }
         }
             
         if(gameState == pauseState){
@@ -187,6 +201,12 @@ public class GamePanel extends JPanel implements Runnable{
             for (Entity mon1 : mon) {
                 if (mon1 != null) {
                     entityList.add(mon1);
+                }
+            }
+            
+            for(int i=0 ; i < projectileList.size(); i++){
+                if (projectileList.get(i) != null) {
+                    entityList.add(projectileList.get(i));
                 }
             }
             

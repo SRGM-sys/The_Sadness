@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import main.GamePanel;
 import handler.KeyHandler;
 import java.util.ArrayList;
+import object.Obj_Fireball;
 import object.Obj_Key;
 import object.Obj_Shield_Wood;
 import object.Obj_Sword_Normal;
@@ -65,6 +66,7 @@ public class Player extends Entity{
         coin = 0;
         currentWeapon = new Obj_Sword_Normal(gp);
         currentShield = new Obj_Shield_Wood(gp);
+        projectile = new Obj_Fireball(gp);
         attack = getAttack();
         defense = getDefense();
     }
@@ -200,6 +202,15 @@ public class Player extends Entity{
             }
         } 
         
+        if(gp.mouseH.rightPressed && !projectile.alive && shotAvailableCounter == 30){
+            // Aquí configuramos la posición, dirección y durabilidad del proyectil
+            projectile.set(worldX, worldY, direction, true, this);
+            
+            gp.projectileList.add(projectile);
+            shotAvailableCounter = 0;
+            gp.soundEffect(11);
+        }
+        
         if(invincible){
             invincibleCounter++;
             if(invincibleCounter > 60){
@@ -207,6 +218,10 @@ public class Player extends Entity{
                 invincibleCounter = 0;
             }
             
+        }
+        
+        if(shotAvailableCounter < 30){
+            shotAvailableCounter++;
         }
     }
     
@@ -239,7 +254,7 @@ public class Player extends Entity{
             
             // Comprobar la colision del mounstro con el X/Y global y solidArea
             int monsterIndex = gp.cChecker.checkEntity(this, gp.mon);
-            damageMonster(monsterIndex);
+            damageMonster(monsterIndex, attack);
             
             
             worldX = currentWorldX;
@@ -292,7 +307,7 @@ public class Player extends Entity{
     }
     
     public void contactMonster(int i){
-        if (i != 999 && !invincible){
+        if (i != 999 && !invincible && !gp.mon[i].dying){
             gp.soundEffect(7);
             
             int damage = gp.mon[i].attack - defense;
@@ -305,7 +320,7 @@ public class Player extends Entity{
         }
     }
     
-    public void damageMonster(int i){
+    public void damageMonster(int i, int attack){
         if(i != 999){
             if(!gp.mon[i].invincible){
                 gp.soundEffect(6);
