@@ -39,6 +39,7 @@ public class KeyHandler implements KeyListener{
            case 2: pauseState(code); break;
            case 3: dialogueState(code); break;
            case 4: characterState(code); break;
+           case 5: gameOverState(code); break;
            
        }
             
@@ -49,7 +50,7 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_S) gp.ui.commandNum++;
         gp.ui.controlCommandNum();
 
-        if(code == KeyEvent.VK_ENTER){
+        if(code == KeyEvent.VK_X){
             switch(gp.ui.commandNum){
                 case 0: 
                     gp.gameState = gp.playState; 
@@ -142,5 +143,42 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_D){
             rightPressed = false;
         }
+    }
+    
+    public void gameOverState(int code){
+        if(code == KeyEvent.VK_W){
+            gp.ui.commandNum--;
+            if(gp.ui.commandNum < 0){
+                gp.ui.commandNum = 1;
+            }
+            gp.soundEffect(10);
+        }
+        if(code == KeyEvent.VK_S){
+            gp.ui.commandNum++;
+            if(gp.ui.commandNum > 1){
+                gp.ui.commandNum = 0;
+            }
+            gp.soundEffect(10);
+        }
+        
+        if( code == KeyEvent.VK_X){
+            if(gp.ui.commandNum == 0){
+                gp.retry();
+                gp.gameState = gp.playState;
+                gp.soundEffect(14);
+                gp.stopMusic();
+                gp.playMusic(0);
+                
+            }
+            else if(gp.ui.commandNum == 1){
+                gp.retry();
+                gp.gameState = gp.titleState;
+                
+                
+            }
+        }
+        
+        
+        
     }
 }

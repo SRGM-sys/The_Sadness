@@ -22,7 +22,7 @@ public class Obj_Potion_Blue extends Entity{
         gp.gameState = gp.dialogueState;
         
         if(gp.player.mana == gp.player.maxMana){
-            gp.ui.currentDialogue = "Todos los cristales de maná están llenos, \n no se uso la poción";
+            gp.ui.currentDialogue = "Todos los cristales de maná están \nllenos, no se uso la poción";
             return false;
         } else{
             gp.ui.currentDialogue = "Recuperaste 1 cristal de maná";

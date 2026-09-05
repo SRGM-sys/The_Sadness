@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JPanel;
 import tile.TileManager;
+import tile_interactive.InteractiveTile;
 
 public class GamePanel extends JPanel implements Runnable{
     
@@ -52,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable{
     public Entity obj[] = new Entity[20]; // Mostrar 10 objetos a la vez
     public Entity npc[] = new Entity[10];
     public Entity mon[] = new Entity[20];
+    public InteractiveTile iTile[] = new InteractiveTile[50];
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
     
@@ -62,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int pauseState = 2;
     public final int dialogueState = 3;
     public final int characterState = 4;
+    public final int gameOverState = 5;
     
     
     public GamePanel(){
@@ -77,9 +80,31 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setObject();
         aSetter.setNPC();
         aSetter.setMonster();
+        aSetter.setInteractiveTile();
         playMusic(5);
         gameState = titleState;
     }
+    
+    public void retry(){
+        player.setDefaultValuesPositions();
+        player.setDefaultStatePlayer();
+
+        player.setItems();
+        
+        projectileList.clear();
+        
+        aSetter.setObject();
+        aSetter.setNPC();
+        aSetter.setMonster();
+        aSetter.setInteractiveTile();
+    }
+    
+    /*
+    public void restart(){
+        player.setDefaultValuesPositions();
+        player.setDefaultStatePlayer();
+    }
+    */
         
     public void startGameThread(){
         gameThread = new Thread(this); // Le pasamos esta clase (Implementa Run)
@@ -154,6 +179,13 @@ public class GamePanel extends JPanel implements Runnable{
                     }
                 }
             }
+            
+            for(int i = 0; i < iTile.length; i++){
+                if(iTile[i] != null){
+                    iTile[i].update();
+                }
+            }
+            
         }
             
         if(gameState == pauseState){
@@ -184,6 +216,12 @@ public class GamePanel extends JPanel implements Runnable{
         else{ 
             // TILE
             tileM.draw(g2); // Es importante dibujar antes del jugador para no taparlo
+            
+            for(int i = 0; i < iTile.length; i++){
+                if(iTile[i] != null){
+                    iTile[i].draw(g2);
+                }
+            }
             
             entityList.add(player);
             

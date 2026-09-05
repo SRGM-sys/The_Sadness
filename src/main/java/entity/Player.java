@@ -73,7 +73,33 @@ public class Player extends Entity{
         defense = getDefense();
     }
     
+    public void setDefaultValuesPositions(){
+        worldX = gp.tileSize * 23;
+        worldY = gp.tileSize * 21;
+        direction = "down";
+    } 
+    
+    public void setDefaultStatePlayer(){
+        level = 1;
+        maxLife = 6;    // 1 vida es la mitad de un corazón
+        life = maxLife;
+        maxMana = 4;
+        mana = maxMana;
+        strength = 1;
+        dexterity = 1;
+        exp = 0;
+        nextLevelExp = 5;
+        coin = 0;
+        currentWeapon = new Obj_Sword_Normal(gp);
+        currentShield = new Obj_Shield_Wood(gp);
+        projectile = new Obj_Fireball(gp);
+        attack = getAttack();
+        defense = getDefense();
+    }
+    
+    
     public void setItems(){
+        inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new Obj_Key(gp));
@@ -170,6 +196,9 @@ public class Player extends Entity{
             int monIndex = gp.cChecker.checkEntity(this, gp.mon);
             contactMonster(monIndex);
             
+            // CHECK INTERACTIVE TILE COLLISION
+            gp.cChecker.checkEntity(this, gp.iTile);
+            
             // CHECK EVENT COLLISION
             gp.eHandler.checkEvent();
             
@@ -182,8 +211,6 @@ public class Player extends Entity{
                     case "left":worldX -= speed; break;
                     case "right": worldX += speed; break;
                 }
-                
-                
             }
 
             // Aquí el personaje cambiará de imagen en cada frame para simular movimiento
@@ -230,6 +257,19 @@ public class Player extends Entity{
         if(shotAvailableCounter < 30){
             shotAvailableCounter++;
         }
+        
+        if(life > maxLife){
+            life = maxLife;
+        }
+        if(mana > maxMana){
+            mana = maxMana;
+        }
+        if(life <= 0){
+            gp.gameState = gp.gameOverState;
+            gp.stopMusic();
+            gp.soundEffect(13);
+            
+        }
     }
     
     public void attacking(){
@@ -263,6 +303,8 @@ public class Player extends Entity{
             int monsterIndex = gp.cChecker.checkEntity(this, gp.mon);
             damageMonster(monsterIndex, attack);
             
+            int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
+            damageInteractiveTile(iTileIndex);
             
             worldX = currentWorldX;
             worldY = currentWorldY;
@@ -293,12 +335,26 @@ public class Player extends Entity{
         }  
     }
     
+    public void damageInteractiveTile(int i){
+        
+        if(i != 999 && gp.iTile[i].destructible && 
+                gp.iTile[i].isCorrectItem(this) && !gp.iTile[i].invincible){
+            gp.iTile[i].playSE();
+            gp.iTile[i].life--;
+            gp.iTile[i].invincible = true;
+            if(gp.iTile[i].life == 0){
+                gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+            }
+        }
+        
+    }
+    
     public void pickUpObject(int i){
         // Si i = 999, significa que no hemos tocado el objeto
         if(i != 999){
             // PICKUP ONLY ITEMS
             if(gp.obj[i].type == type_pickUpOnly){
-                gp.obj[i].use(this);
+                gp.obj[i].pickUp(this);
                 gp.obj[i] = null;
             }
             

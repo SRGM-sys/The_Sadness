@@ -111,7 +111,7 @@ public class Entity {
         }
     }
     
-    public void pickUp(){}
+    public void pickUp(Entity entity){}
     public boolean use(Entity entity){ return false;}
     
     public void checkDrop(){}
@@ -135,6 +135,7 @@ public class Entity {
         gp.cChecker.checkObject(this, false);
         gp.cChecker.checkEntity(this, gp.npc);
         gp.cChecker.checkEntity(this, gp.mon);
+        gp.cChecker.checkEntity(this, gp.iTile);
         boolean contactPlayer = gp.cChecker.checkerPlayer(this);
         
         // Si el jugador choca con un mounstro entonces

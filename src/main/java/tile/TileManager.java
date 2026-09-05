@@ -72,8 +72,7 @@ public class TileManager {
         setup(38, "road12", false);
         setup(39, "earth", false);
         setup(40, "wall", true);
-        setup(41, "tree", true);      
-        
+        setup(41, "tree", true);
     }
     
     // Esta función va a optimizar la creación de los mosaicos y su escala

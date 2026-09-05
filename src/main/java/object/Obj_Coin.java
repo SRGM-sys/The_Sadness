@@ -17,9 +17,9 @@ public class Obj_Coin extends Entity{
         value = 1;
         down1 = setup("objects", "coin", super.px, super.px);
     }
-    
+
     @Override
-    public void pickUp(){
+    public void pickUp(Entity user){
         gp.soundEffect(1);
         gp.ui.addMessage("Moneda +" + value);
         gp.player.coin += value;
