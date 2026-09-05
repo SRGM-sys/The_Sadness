@@ -12,6 +12,7 @@ public class Obj_Door extends Entity{
         name = "door";
         down1 = setup("objects","door", super.px, super.px);
         collision = true;
+        type = type_door;
         
         solidArea.x = 0;
         solidArea.y = 16;  

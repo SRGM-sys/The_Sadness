@@ -66,16 +66,16 @@ public class Player extends Entity{
         exp = 0;
         nextLevelExp = 5;
         coin = 0;
-        currentWeapon = new Obj_Sword_Normal(gp);
-        currentShield = new Obj_Shield_Wood(gp);
-        projectile = new Obj_Fireball(gp);
+        currentWeapon = null;
+        currentShield = null;
+        projectile = null;
         attack = getAttack();
         defense = getDefense();
     }
     
     public void setDefaultValuesPositions(){
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
+        worldX = gp.tileSize * 14;
+        worldY = gp.tileSize * 36;
         direction = "down";
     } 
     
@@ -100,17 +100,20 @@ public class Player extends Entity{
     
     public void setItems(){
         inventory.clear();
-        inventory.add(currentWeapon);
-        inventory.add(currentShield);
-        inventory.add(new Obj_Key(gp));
     }
     
     public int getAttack(){
+        if(currentWeapon == null) {
+            return 0; // El jugador hace 0 daño sin arma
+        }
         attackArea = currentWeapon.attackArea;
         return attack = strength * currentWeapon.attackValue;
     }
     
     public int getDefense(){
+        if(currentShield == null) {
+            return 0; // O puedes retornar 'dexterity' si quieres una defensa base
+        }
         return defense = dexterity * currentShield.defenseValue;
     }
     
@@ -126,6 +129,8 @@ public class Player extends Entity{
     }
     
     public void getPlayerAttackImage(){
+        
+        if(currentWeapon == null) return;
         
         if(currentWeapon.type == type_sword){
             atkUp1 = setup("player", "boy_attack_up_1", super.px, super.px*2);
@@ -231,7 +236,7 @@ public class Player extends Entity{
             }
         } 
         
-        if(gp.mouseH.rightPressed && !projectile.alive 
+        if(gp.mouseH.rightPressed && !projectile.alive && projectile != null 
         && shotAvailableCounter == 30 && projectile.haveResource(this)){
             // Aquí configuramos la posición, dirección y durabilidad del proyectil
             projectile.set(worldX, worldY, direction, true, this);
@@ -319,7 +324,7 @@ public class Player extends Entity{
     }
     
     public void verifyAttack(){
-        if(gp.mouseH.leftPressed && !attacking){
+        if(gp.mouseH.leftPressed && !attacking && currentWeapon != null){
             gp.soundEffect(8);
             attacking = true;
         }
@@ -356,6 +361,30 @@ public class Player extends Entity{
             if(gp.obj[gp.currentMap][i].type == type_pickUpOnly){
                 gp.obj[gp.currentMap][i].pickUp(this);
                 gp.obj[gp.currentMap][i] = null;
+            }
+            
+            // ESTO ES PARA LAS PUERTAS
+            else if(gp.obj[gp.currentMap][i].type == type_door){
+                if(gp.keyH.enterPressed) { // Verifica que presionaste la 'X'
+                    if(gp.obj[gp.currentMap][i].name.equals("door")) {
+
+                        boolean hasKey = false;
+                        // Escaneamos el inventario
+                        for(int j = 0; j < inventory.size(); j++) {
+                            if(inventory.get(j).name.equals("key")) {
+                                gp.soundEffect(3); // Sonido unlock
+                                gp.obj[gp.currentMap][i] = null; // Puerta destruida
+                                inventory.remove(j); // Gastamos la llave
+                                gp.ui.addMessage("Puerta desbloqueada");
+                                hasKey = true;
+                                break;
+                            }
+                        }
+                        if(!hasKey) {
+                            gp.ui.addMessage("Necesitas una llave");
+                        }
+                    }
+                }
             }
             
             // INVENTORY ITEMS

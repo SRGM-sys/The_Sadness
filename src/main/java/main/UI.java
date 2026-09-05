@@ -329,10 +329,10 @@ public class UI {
         // 3. IMÁGENES DE EQUIPAMIENTO
         // textY ya quedó posicionado exactamente después de "Oro" gracias al bucle
         textY -= 35; // Tu ajuste original de píxeles
-
-        g2.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize + 10, textY, null);
+        
+        if(gp.player.currentWeapon != null) g2.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize + 10, textY, null);
         textY += gp.tileSize;
-        g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize + 10, textY, null);
+        if(gp.player.currentShield != null) g2.drawImage(gp.player.currentShield.down1, tailX - gp.tileSize + 10, textY, null);
 
     }
     
