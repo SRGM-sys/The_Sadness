@@ -31,6 +31,8 @@ public class GamePanel extends JPanel implements Runnable{
     // WORLD SETTINGS
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
+    public final int maxMap = 10;
+    public int currentMap = 0;
     
     // FPS
     int FPS = 60;
@@ -50,10 +52,10 @@ public class GamePanel extends JPanel implements Runnable{
     
     // ENTITY & OBJECT
     public Player player = new Player(this, keyH);
-    public Entity obj[] = new Entity[20]; // Mostrar 10 objetos a la vez
-    public Entity npc[] = new Entity[10];
-    public Entity mon[] = new Entity[20];
-    public InteractiveTile iTile[] = new InteractiveTile[50];
+    public Entity obj[][] = new Entity[maxMap][20]; // Mostrar 10 objetos a la vez
+    public Entity npc[][] = new Entity[maxMap][10];
+    public Entity mon[][] = new Entity[maxMap][20];
+    public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entityList = new ArrayList<>();
     
@@ -90,8 +92,23 @@ public class GamePanel extends JPanel implements Runnable{
         player.setDefaultStatePlayer();
 
         player.setItems();
-        
         projectileList.clear();
+        
+        // LIMPIEZA TOTAL BIDIMENSIONAL
+        for(int map = 0; map < maxMap; map++) {
+            for (int i = 0; i < obj[map].length; i++) {
+                obj[map][i] = null;
+            }
+            for (int i = 0; i < npc[map].length; i++) {
+                npc[map][i] = null;
+            }
+            for (int i = 0; i < mon[map].length; i++) {
+                mon[map][i] = null;
+            }
+            for (int i = 0; i < iTile[map].length; i++) {
+                iTile[map][i] = null;
+            }
+        }
         
         aSetter.setObject();
         aSetter.setNPC();
@@ -150,20 +167,22 @@ public class GamePanel extends JPanel implements Runnable{
         if(gameState == playState){
             // El jugador y los NPC se pueden mover
             player.update(); 
-            for (Entity npc1 : npc) {
-                if (npc1 != null) {
-                    npc1.update();
+            
+            for(int i = 0; i < npc[1].length; i++){
+                if(npc[currentMap][i] != null){
+                    npc[currentMap][i].update();
                 }
             }
-            for (int i = 0; i < mon.length; i++) {
-                if (mon[i] != null) {
-                    if (mon[i].alive && !mon[i].dying) {
-                        mon[i].update();
+            
+            for (int i = 0; i < mon[1].length; i++) {
+                if (mon[currentMap][i] != null) {
+                    if (mon[currentMap][i].alive && !mon[currentMap][i].dying) {
+                        mon[currentMap][i].update();
                     }
 
-                    if (!mon[i].alive) {
-                        mon[i].checkDrop();
-                        mon[i] = null; 
+                    if (!mon[currentMap][i].alive) {
+                        mon[currentMap][i].checkDrop();
+                        mon[currentMap][i] = null; 
                     }
                 }
             }
@@ -180,9 +199,9 @@ public class GamePanel extends JPanel implements Runnable{
                 }
             }
             
-            for(int i = 0; i < iTile.length; i++){
-                if(iTile[i] != null){
-                    iTile[i].update();
+            for(int i = 0; i < iTile[1].length; i++){
+                if(iTile[currentMap][i] != null){
+                    iTile[currentMap][i].update();
                 }
             }
             
@@ -217,31 +236,32 @@ public class GamePanel extends JPanel implements Runnable{
             // TILE
             tileM.draw(g2); // Es importante dibujar antes del jugador para no taparlo
             
-            for(int i = 0; i < iTile.length; i++){
-                if(iTile[i] != null){
-                    iTile[i].draw(g2);
+            for(int i = 0; i < iTile[1].length; i++){
+                if(iTile[currentMap][i] != null){
+                    iTile[currentMap][i].draw(g2);
                 }
             }
             
             entityList.add(player);
             
-            for (Entity npc1 : npc) {
-                if (npc1 != null) {
-                    entityList.add(npc1);
+            for(int i = 0; i < npc[1].length; i++){
+                if(npc[currentMap][i] != null){
+                    entityList.add(npc[currentMap][i]);
                 }
             }
             
-            for (Entity obj1 : obj) {
-                if (obj1 != null) {
-                    entityList.add(obj1);
+            for(int i = 0; i < obj[1].length; i++){
+                if(obj[currentMap][i] != null){
+                    entityList.add(obj[currentMap][i]);
                 }
             }
             
-            for (Entity mon1 : mon) {
-                if (mon1 != null) {
-                    entityList.add(mon1);
+            for(int i = 0; i < mon[1].length; i++){
+                if(mon[currentMap][i] != null){
+                    entityList.add(mon[currentMap][i]);
                 }
             }
+
             
             for(int i=0 ; i < projectileList.size(); i++){
                 if (projectileList.get(i) != null) {

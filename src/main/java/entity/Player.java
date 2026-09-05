@@ -330,20 +330,20 @@ public class Player extends Entity{
         if(i != 999){
             if(gp.keyH.enterPressed){
                 gp.gameState = gp.dialogueState;
-                gp.npc[i].speak();
+                gp.npc[gp.currentMap][i].speak();
             }
         }  
     }
     
     public void damageInteractiveTile(int i){
         
-        if(i != 999 && gp.iTile[i].destructible && 
-                gp.iTile[i].isCorrectItem(this) && !gp.iTile[i].invincible){
-            gp.iTile[i].playSE();
-            gp.iTile[i].life--;
-            gp.iTile[i].invincible = true;
-            if(gp.iTile[i].life == 0){
-                gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+        if(i != 999 && gp.iTile[gp.currentMap][i].destructible && 
+                gp.iTile[gp.currentMap][i].isCorrectItem(this) && !gp.iTile[gp.currentMap][i].invincible){
+            gp.iTile[gp.currentMap][i].playSE();
+            gp.iTile[gp.currentMap][i].life--;
+            gp.iTile[gp.currentMap][i].invincible = true;
+            if(gp.iTile[gp.currentMap][i].life == 0){
+                gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
             }
         }
         
@@ -353,9 +353,9 @@ public class Player extends Entity{
         // Si i = 999, significa que no hemos tocado el objeto
         if(i != 999){
             // PICKUP ONLY ITEMS
-            if(gp.obj[i].type == type_pickUpOnly){
-                gp.obj[i].pickUp(this);
-                gp.obj[i] = null;
+            if(gp.obj[gp.currentMap][i].type == type_pickUpOnly){
+                gp.obj[gp.currentMap][i].pickUp(this);
+                gp.obj[gp.currentMap][i] = null;
             }
             
             // INVENTORY ITEMS
@@ -363,26 +363,26 @@ public class Player extends Entity{
                 String text;
             
                 if(inventory.size() != maxInventorySize){
-                    inventory.add(gp.obj[i]);
+                    inventory.add(gp.obj[gp.currentMap][i]);
                     gp.soundEffect(1);
-                    text = "Conseguiste: " + gp.obj[i].name;
+                    text = "Conseguiste: " + gp.obj[gp.currentMap][i].name;
                 }
                 else{
                     text = "El inventario se encuentra lleno";
                 }
 
                 gp.ui.addMessage(text);
-                gp.obj[i] = null;
+                gp.obj[gp.currentMap][i] = null;
             }
             
         }
     }
     
     public void contactMonster(int i){
-        if (i != 999 && !invincible && !gp.mon[i].dying){
+        if (i != 999 && !invincible && !gp.mon[gp.currentMap][i].dying){
             gp.soundEffect(7);
             
-            int damage = gp.mon[i].attack - defense;
+            int damage = gp.mon[gp.currentMap][i].attack - defense;
             if(damage < 0){
                 damage = 0;
             }
@@ -394,22 +394,22 @@ public class Player extends Entity{
     
     public void damageMonster(int i, int attack){
         if(i != 999){
-            if(!gp.mon[i].invincible){
+            if(!gp.mon[gp.currentMap][i].invincible){
                 gp.soundEffect(6);
                 
-                int damage = attack - gp.mon[i].defense;
+                int damage = attack - gp.mon[gp.currentMap][i].defense;
                 if(damage < 0){
                     damage = 0;
                 }
-                gp.mon[i].life -= damage;
+                gp.mon[gp.currentMap][i].life -= damage;
                 
-                gp.mon[i].invincible = true;
-                gp.mon[i].damageReaction();
+                gp.mon[gp.currentMap][i].invincible = true;
+                gp.mon[gp.currentMap][i].damageReaction();
                 
-                if(gp.mon[i].life <= 0){
-                    gp.mon[i].dying = true;
-                    exp += gp.mon[i].exp;
-                    gp.ui.addMessage("+ "+ gp.mon[i].exp + " xp");
+                if(gp.mon[gp.currentMap][i].life <= 0){
+                    gp.mon[gp.currentMap][i].dying = true;
+                    exp += gp.mon[gp.currentMap][i].exp;
+                    gp.ui.addMessage("+ "+ gp.mon[gp.currentMap][i].exp + " xp");
                     checkLevelUp();
                 }
             }
