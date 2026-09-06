@@ -88,32 +88,26 @@ public class GamePanel extends JPanel implements Runnable{
     }
     
     public void retry(){
-        player.setDefaultValuesPositions();
-        player.setDefaultStatePlayer();
-
-        player.setItems();
+        player.inventory.clear();
         projectileList.clear();
-        
-        // LIMPIEZA TOTAL BIDIMENSIONAL
+        player.setDefaultValuesPositions();
+        player.returnByDeath();
+
+        // 1. CHAO A TODO (Limpieza letal de Objetos y Monstruos)
         for(int map = 0; map < maxMap; map++) {
             for (int i = 0; i < obj[map].length; i++) {
-                obj[map][i] = null;
-            }
-            for (int i = 0; i < npc[map].length; i++) {
-                npc[map][i] = null;
+                obj[map][i] = null; 
             }
             for (int i = 0; i < mon[map].length; i++) {
-                mon[map][i] = null;
+                mon[map][i] = null; 
             }
-            for (int i = 0; i < iTile[map].length; i++) {
-                iTile[map][i] = null;
-            }
+            // npc[][] y iTile[][] se quedan intactos para mantener la memoria del mundo
         }
-        
-        aSetter.setObject();
-        aSetter.setNPC();
-        aSetter.setMonster();
-        aSetter.setInteractiveTile();
+
+        // 2. Ejecutar tu idea: Instanciar solo lo estrictamente necesario
+        aSetter.setRespawnObjects();
+
+        eHandler.slimeEventDone = false;
     }
     
     /*

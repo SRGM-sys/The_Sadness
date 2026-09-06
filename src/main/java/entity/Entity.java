@@ -26,7 +26,8 @@ public class Entity {
     
     
     // DIÁLOGOS
-    String dialogues[] = new String[20];
+    String dialogues[][] = new String[5][20];
+    public int dialogueSet = 0;
     int dialogueIndex = 0;
     
     // IMÁGENES
@@ -97,11 +98,11 @@ public class Entity {
     public void setAction(){}
     public void damageReaction(){}
     public void speak(){
-        if(dialogues[dialogueIndex] == null){
+        if(dialogues[dialogueSet][dialogueIndex] == null){
             dialogueIndex = 0;
         }
         
-        gp.ui.currentDialogue = dialogues[dialogueIndex];
+        gp.ui.currentDialogue = dialogues[dialogueSet][dialogueIndex];
         dialogueIndex++;
 
         switch(gp.player.direction){

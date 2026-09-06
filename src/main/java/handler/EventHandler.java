@@ -10,6 +10,7 @@ public class EventHandler {
     
     GamePanel gp;
     EventRect eventRect[][];
+    public boolean slimeEventDone = false;
     
     /* Estas 2 variables de aqui nos sirven para
     * Que un evento vuelva a ocurrir luego de que el jugador se aleje cierta distancia
@@ -58,6 +59,8 @@ public class EventHandler {
             if(hit(27,16, "right")) damagePit(27, 16, gp.dialogueState);
             if(hit(23,12, "up")) healingPool(23, 12, gp.dialogueState);
         }   
+        
+        if(hit(38, 39, "any")) endStairs(38, 39, gp.dialogueState);
     }
     
     // Va a ver si el usuario se acerca al rectangulo evento
@@ -107,6 +110,37 @@ public class EventHandler {
         }
         
         gp.keyH.enterPressed = false;
+    }
+    
+    public void endStairs(int col, int row, int gameState){
+        if(gp.keyH.enterPressed){
+            gp.gameState = gameState;
+            gp.ui.currentDialogue = "Sientes una brisa que proviene \nde las escaleras...\n¿Es este el final?";
+        }
+        
+        gp.keyH.enterPressed = false;
+    }
+    
+    public void checkDoorsOpened() {
+        // Si el evento ya ocurrió antes, cancelamos para no repetirlo
+        if (slimeEventDone) return; 
+
+        boolean doorsLeft = false;
+
+        // Escaneamos todos los objetos del mapa actual
+        for (int i = 0; i < gp.obj[gp.currentMap].length; i++) {
+            if (gp.obj[gp.currentMap][i] != null && gp.obj[gp.currentMap][i].name.equals("door")) {
+                doorsLeft = true; // Aún queda al menos una puerta
+                break;
+            }
+        }
+
+        // Si el bucle terminó y doorsLeft sigue siendo false, no hay puertas
+        if (!doorsLeft) {
+            gp.gameState = gp.dialogueState; // Cambiamos al estado de diálogo
+            gp.ui.currentDialogue = "Los slimes solo pueden morir por \nmagia";
+            slimeEventDone = true; // Sellamos el evento para siempre
+        }
     }
     
     

@@ -10,6 +10,7 @@ import handler.KeyHandler;
 import java.util.ArrayList;
 import object.Obj_Fireball;
 import object.Obj_Key;
+import object.Obj_Potion_Blue;
 import object.Obj_Shield_Wood;
 import object.Obj_Sword_Normal;
 
@@ -73,6 +74,37 @@ public class Player extends Entity{
         defense = getDefense();
     }
     
+    public void returnByDeath() {
+        // 1. Vacía el inventario
+        inventory.clear();
+
+        // 2. Reinicia el nivel y stats (dejando intacto el 'projectile' de magia)
+        level = 1;
+        exp = 0;
+        nextLevelExp = 5;
+        maxLife = 6;
+        life = maxLife;
+        maxMana = 4;
+        mana = maxMana;
+        strength = 1;
+        dexterity = 1;
+        coin = 0;
+
+        // 3. Añade un hacha al inventario y la equipa
+        currentWeapon = new object.Obj_Axe(gp); // Se usa la ruta directa para evitar importar la clase
+        inventory.add(currentWeapon);
+        inventory.add(new Obj_Key(gp));
+        inventory.add(new Obj_Potion_Blue(gp));
+        inventory.add(new Obj_Potion_Blue(gp));
+        inventory.add(new Obj_Potion_Blue(gp));
+        currentShield = null; // El jugador revive sin escudo
+
+        // Actualiza el daño y carga las imágenes de ataque del hacha
+        attack = getAttack();
+        defense = getDefense();
+        getPlayerAttackImage();
+    }
+
     public void setDefaultValuesPositions(){
         worldX = gp.tileSize * 14;
         worldY = gp.tileSize * 36;
@@ -236,18 +268,20 @@ public class Player extends Entity{
             }
         } 
         
-        if(gp.mouseH.rightPressed && !projectile.alive && projectile != null 
-        && shotAvailableCounter == 30 && projectile.haveResource(this)){
-            // Aquí configuramos la posición, dirección y durabilidad del proyectil
-            projectile.set(worldX, worldY, direction, true, this);
-            
-            // Restamos el costo (mana, munición, etc)
-            projectile.subtractResource(this);
-            
-            // Lo añadimos a la lista
-            gp.projectileList.add(projectile);
-            shotAvailableCounter = 0;
-            gp.soundEffect(11);
+        if(gp.mouseH.rightPressed && shotAvailableCounter == 30) {
+            // 1. Si tiene magia y recursos
+            if(projectile != null && !projectile.alive && projectile.haveResource(this)){
+                projectile.set(worldX, worldY, direction, true, this);
+                projectile.subtractResource(this);
+                gp.projectileList.add(projectile);
+                shotAvailableCounter = 0;
+                gp.soundEffect(11);
+            } 
+            // 2. Si intenta disparar sin magia
+            else if (projectile == null) {
+                gp.ui.addMessage("¡No sabes ningún hechizo!");
+                shotAvailableCounter = 0; // Reseteamos el contador para evitar spam visual
+            }
         }
         
         if(invincible){
@@ -306,7 +340,7 @@ public class Player extends Entity{
             
             // Comprobar la colision del mounstro con el X/Y global y solidArea
             int monsterIndex = gp.cChecker.checkEntity(this, gp.mon);
-            damageMonster(monsterIndex, attack);
+            damageMonster(monsterIndex, attack, false);
             
             int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
             damageInteractiveTile(iTileIndex);
@@ -324,9 +358,16 @@ public class Player extends Entity{
     }
     
     public void verifyAttack(){
-        if(gp.mouseH.leftPressed && !attacking && currentWeapon != null){
-            gp.soundEffect(8);
-            attacking = true;
+        if(gp.mouseH.leftPressed && !attacking){
+            if(currentWeapon != null){
+                gp.soundEffect(8);
+                attacking = true;
+            } 
+            else if (shotAvailableCounter == 30) { 
+                // Reutilizamos el timer de los proyectiles como enfriamiento para el texto
+                gp.ui.addMessage("No tienes ningún arma");
+                shotAvailableCounter = 0;
+            }
         }
     }
     
@@ -376,6 +417,7 @@ public class Player extends Entity{
                                 gp.obj[gp.currentMap][i] = null; // Puerta destruida
                                 inventory.remove(j); // Gastamos la llave
                                 gp.ui.addMessage("Puerta desbloqueada");
+                                gp.eHandler.checkDoorsOpened();
                                 hasKey = true;
                                 break;
                             }
@@ -421,9 +463,15 @@ public class Player extends Entity{
         }
     }
     
-    public void damageMonster(int i, int attack){
+    public void damageMonster(int i, int attack, boolean isMagic){
         if(i != 999){
             if(!gp.mon[gp.currentMap][i].invincible){
+                if (gp.mon[gp.currentMap][i].name.equals("Green Slime") && !isMagic) {
+                    gp.soundEffect(15);
+                    gp.ui.addMessage("¡Ataque físico ineficaz!");
+                    return; // Corta la ejecución: no resta vida ni da experiencia
+                }
+                
                 gp.soundEffect(6);
                 
                 int damage = attack - gp.mon[gp.currentMap][i].defense;

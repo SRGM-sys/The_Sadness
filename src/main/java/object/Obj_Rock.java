@@ -13,9 +13,9 @@ public class Obj_Rock extends Projectile{
         
         name = "Rock";
         speed = 8;
-        maxLife = 80;
+        maxLife = 20;
         life = maxLife;
-        attack = 2;
+        attack = 1;
         useCost = 1;
         alive = false; // Esto de aquí es para no spamear proyectiles
         getImage();

@@ -3,8 +3,11 @@ package handler;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import main.GamePanel;
 
 public class MouseHandler implements MouseListener{
+    
+   GamePanel gp; 
     
     public boolean leftPressed = false;
     public boolean rightPressed = false;

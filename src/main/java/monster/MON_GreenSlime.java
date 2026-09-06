@@ -4,6 +4,8 @@ import entity.Entity;
 import java.util.Random;
 import main.GamePanel;
 import object.Obj_Coin;
+import object.Obj_Potion_Blue;
+import object.Obj_Potion_Red;
 import object.Obj_Rock;
 
 public class MON_GreenSlime extends Entity{
@@ -20,7 +22,7 @@ public class MON_GreenSlime extends Entity{
         life = maxLife;
         attack = 2;
         defense = 0;
-        exp = 3;
+        exp = 1;
         projectile = new Obj_Rock(gp);
         
         solidArea.x = 3;
@@ -90,8 +92,14 @@ public class MON_GreenSlime extends Entity{
     @Override
     public void checkDrop(){
         // Con esto manejaremos que va a dropear el mounstro
-        // int i = new Random().nextInt(100)+1;
+        int i = new Random().nextInt(100)+1;
+        if(i<= 75){
+            dropItem(new Obj_Potion_Blue(gp));
+        }
+        if(i>75){
+            dropItem(new Obj_Potion_Red(gp));
+        }
+
         
-        dropItem(new Obj_Coin(gp));
     }
 }
