@@ -469,6 +469,10 @@ public class Player extends Entity{
                 if (gp.mon[gp.currentMap][i].name.equals("Green Slime") && !isMagic) {
                     gp.soundEffect(15);
                     gp.ui.addMessage("¡Ataque físico ineficaz!");
+                    
+                    gp.mon[gp.currentMap][i].invincible = true; 
+                    gp.mon[gp.currentMap][i].damageReaction();
+                    
                     return; // Corta la ejecución: no resta vida ni da experiencia
                 }
                 

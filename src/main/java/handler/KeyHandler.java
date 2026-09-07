@@ -50,7 +50,7 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_S) gp.ui.commandNum++;
         gp.ui.controlCommandNum();
 
-        if(code == KeyEvent.VK_X){
+        if(code == KeyEvent.VK_E){
             switch(gp.ui.commandNum){
                 case 0: 
                     gp.gameState = gp.playState; 
@@ -71,9 +71,9 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_D) rightPressed = true;
 
         if(code == KeyEvent.VK_P) gp.gameState = gp.pauseState;
-        if(code == KeyEvent.VK_X) enterPressed = true;
+        if(code == KeyEvent.VK_E) enterPressed = true;
 
-        if(code == KeyEvent.VK_C) gp.gameState = gp.characterState;
+        if(code == KeyEvent.VK_Q) gp.gameState = gp.characterState;
 
         // Show Draw Time: Cada vez que presione T, cambia de estado
         if(code == KeyEvent.VK_T){
@@ -91,11 +91,11 @@ public class KeyHandler implements KeyListener{
     }
     
     public void dialogueState(int code){
-        if(code == KeyEvent.VK_X) gp.gameState = gp.playState;
+        if(code == KeyEvent.VK_E) gp.gameState = gp.playState;
     }
     
     public void characterState(int code){
-        if(code == KeyEvent.VK_C) gp.gameState = gp.playState;
+        if(code == KeyEvent.VK_Q) gp.gameState = gp.playState;
         
         if(code == KeyEvent.VK_W){
             if(gp.ui.slotRow != 0){
@@ -122,7 +122,7 @@ public class KeyHandler implements KeyListener{
             }
             gp.soundEffect(10);
         }
-        if(code == KeyEvent.VK_X){
+        if(code == KeyEvent.VK_E){
             gp.player.selectItem();
         }
     }
@@ -161,7 +161,7 @@ public class KeyHandler implements KeyListener{
             gp.soundEffect(10);
         }
         
-        if( code == KeyEvent.VK_X){
+        if( code == KeyEvent.VK_E){
             if(gp.ui.commandNum == 0){
                 gp.retry();
                 gp.gameState = gp.playState;

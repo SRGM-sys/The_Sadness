@@ -20,7 +20,7 @@ public class Entity {
     public int px;
    
     // COLISIONES
-    public Rectangle solidArea = new Rectangle(0,0,48,48); // Cuadro por defecto
+    public Rectangle solidArea = new Rectangle(0,0,40,40); // Cuadro por defecto
     public Rectangle attackArea = new Rectangle(0,0,0,0);
     public int solidAreaDefaultX, solidAreaDefaultY;
     
